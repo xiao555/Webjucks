@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body_class %}login{% endblock %}
+
+{% block main %}
+<main class="main sign">
+  <div class="title">Sign in</div>
+  <div class="panel sign-form">
+    <form action="/" method="post">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="user">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+      <input type="checkbox" id="remember" name="remember"><label for="remember">Remeber Me</label>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+  <div class="panel new">
+    New to here? <a href="/register" class="register">Create a account.</a>
+  </div>
+</main>
+{% endblock %}
