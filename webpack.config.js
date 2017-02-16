@@ -7,6 +7,12 @@ var stylusUrl           = require('stylus-url');
 var ExtractTextPlugin   = require("extract-text-webpack-plugin");
 var BrowserSyncPlugin   = require('browser-sync-webpack-plugin');
 var HtmlWebpackPlugin   = require('html-webpack-plugin');
+var fs                  = require('fs');
+var yaml                = require('js-yaml');
+var njx                 = require('njx');
+var util                = require('util');
+var matter              = require('gray-matter');
+var nunjucks            = require('nunjucks');
 
 
 // 文档: https://webpack.github.io/docs/configuration.html
@@ -55,7 +61,10 @@ var config = {
     document: 'document'
   },
   resolve: {
-    // root: path.join(__dirname, './src'),
+    root: [
+            __dirname + '/src',
+            __dirname + '/src/views'    // Resolve templates to ./src/views
+        ],
     modulesDirectories: ['node_modules', 'bower_components'],
     extensions: ['', '.es6.js', '.js', '.vue' ],
     alias: {
@@ -122,8 +131,13 @@ var config = {
 
 var pages = Object.keys(getEntry('views/**/*.html', ['includes', 'base']));
 pages.forEach(function(pathname) {
+    var basePath = path.resolve('src/posts/' + pathname + '.html');
+    var contents = fs.readFileSync(basePath, 'utf8');
+    var data     = matter(contents);
+    data.data.content = data.content;
+    var context  = JSON.stringify(data.data);
     var conf = {
-        template:  '!!file-loader?name=../' + pathname + '.html!nunjucks-html-loader?{\"searchPaths\":[\"views\"]}!views/' + pathname + '.html', //html模板路径
+        template:  '!!file-loader?name=../' + pathname + '.html!nunjucks-html-loader?{"searchPaths":["views"],"context":'+ context +'}!views/' + pathname + '.html', //html模板路径
     };
     config.plugins.push(new HtmlWebpackPlugin(conf));
 });
@@ -144,9 +158,7 @@ function getEntry(globPath, filter) {
         pathname = path.join(dirname, basename);
         var tararr = pathname.split('/');
         tararr.shift();
-        console.log(tararr);
         var target = tararr.join('/');
-        console.log(target);
         entries[target] = ['./' + entry];
     }
     return entries;
