@@ -116,5 +116,5 @@ autoprefixer 可以自动给css属性添加前缀。
 npm install
 npm start
 ```
- 会自动转到浏览器浏览 `http://localhost:4000/` , 采用[Browsersync](http://www.browsersync.cn/) 热加载的，修改js，css会自动刷新，`views`模板和数据不会
+ 会自动转到浏览器浏览 `http://localhost:4000/` , 采用[Browsersync](http://www.browsersync.cn/) 热加载的，修改html, js，css会自动刷新。
 
