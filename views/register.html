@@ -3,17 +3,26 @@
 {% block body_class %}register{% endblock %}
 
 {% block main %}
-  {{ title }}
-<div class="main">
-  {% if message %}
-  <p> {{ message }}</p>
-     <a href="/">Back to Home</a>
-  {% endif %}
+<main class="form">
   <form action="/register" method="post">
-    user: <input type="text" name="user">
-    password: <input type="password" name="password">
-    Confirm Password: <input type="password" name="confirm">
-    <input type="submit" name="Register">
+    <div class="title">Sign up</div>
+    <div class="panel">
+      <div class="item">
+        <label>User</label>
+        <input type="text" name="user">
+      </div>
+      <div class="item">
+        <label>Password</label>
+        <input type="password" name="password">
+      </div>
+      <div class="item">
+        <label>Confirm Password</label>
+        <input type="password" name="confirm">
+      </div>
+      <div class="item">
+        <input class="register" type="submit" name="Register">
+      </div>
+    </div>
   </form>
-</div>
+</main>
 {% endblock %}

@@ -89,7 +89,7 @@ var config = {
       poststylus([ 'autoprefixer' ]),
     ],
     import: [
-      '~nib/lib/nib/index.styl',
+      '~nib/index.styl',
       path.join(paths.styles, 'stylus/variables.styl')
     ]
   },
@@ -137,7 +137,7 @@ pages.forEach(function(pathname) {
     data.data.content = data.content;
     var context  = JSON.stringify(data.data);
     var conf = {
-        template:  '!!file-loader?name=../' + pathname + '.html!nunjucks-html-loader?{"searchPaths":["views"],"context":'+ context +'}!views/' + pathname + '.html', //html模板路径
+        template:  '!!file-loader?name=../' + pathname + '.html!nunjucks-extend-loader?{"searchPaths":["views"],"context":'+ context +',"imgroot":"src"}!views/' + pathname + '.html', //html模板路径
     };
     config.plugins.push(new HtmlWebpackPlugin(conf));
 });

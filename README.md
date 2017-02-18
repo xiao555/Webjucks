@@ -53,6 +53,22 @@ content
 {{ content }} // content
 ```
 
+在html里img标签用到的图片会复制到build目录下：
+
+```
+// html
+<img src="assets/images/bg.jpg">
+
+- root
+  - src/assets/images/bg.jpg  
+```  
+after loader:
+```
+- root
+  - build/assets/images/bg.jpg 
+  - src/assets/images/bg.jpg 
+```
+
 我们采用的模板引擎是 [Nunjucks](https://mozilla.github.io/nunjucks/) ,后面会加上一些高级应用。
 
 #### CSS 和 JS
@@ -85,6 +101,14 @@ import 'jquery-validation/dist/jquery.validate.js' // 导入 jquery-validation
 ```
 解释一下前两行，`copy！` 是在配置文件中写好的，后面的js文件复制到 `build/assets` 里。
 `jquery` 也是写在配置文件中的。
+
+另外，引入了 [nib](https://github.com/tj/nib) 以及 [autoprefixer](https://github.com/postcss/autoprefixer), nib 的函数可以直接在styl里引用，例如 `common.styl` 里
+
+```css
+global-reset()
+normalize-css()
+``` 
+autoprefixer 可以自动给css属性添加前缀。
 
 #### 打包测试
 
