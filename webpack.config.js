@@ -13,6 +13,20 @@ var njx                 = require('njx');
 var util                = require('util');
 var matter              = require('gray-matter');
 var nunjucks            = require('nunjucks');
+var MarkdownIt          = require('markdown-it');
+var markdownItAttrs     = require('markdown-it-attrs');
+
+
+var YAML_SCHEMA;
+var md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  typographer: true,
+  //highlight: function (str, lang) {
+  //  return '<div class="col '+lang+'">'+str+'</div>';
+  //}
+});
+md.use(markdownItAttrs);
 
 
 // 文档: https://webpack.github.io/docs/configuration.html
@@ -42,10 +56,10 @@ var config = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel'},
-      { test: /\.(jpe?g|png|gif|svg)$/, loader: 'file-loader?name=static/[hash].[ext]'},
-      { test: /\.(woff|woff2)$/, loader: 'file-loader?name=static/[hash].[ext]'},
-      { test: /\.(ttf|eot|otf)$/, loader: 'file-loader?name=static/[hash].[ext]'},
+      { test: /\.js$/, loader: 'babel', exclude: /node_modules/},
+      { test: /\.(jpe?g|png|gif|svg)(\?(\w|\W)*)*$/, loader: 'file-loader?name=static/[hash].[ext]'},
+      { test: /\.(woff|woff2)(\?(\w|\W)*)*$/, loader: 'file-loader?name=static/[hash].[ext]'},
+      { test: /\.(ttf|eot|otf)(\?(\w|\W)*)*$/, loader: 'file-loader?name=static/[hash].[ext]'},
       { test: /\.txt$/, loader: 'raw-loader'},
       // Extract css files
       { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader?sourceMap") },
@@ -54,11 +68,6 @@ var config = {
       { test: /\.styl$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader?sourceMap") }
       // You could also use other loaders the same way. I. e. the autoprefixer-loader
     ]
-  },
-  externals: {
-    jquery: 'jQuery',
-    window: 'window',
-    document: 'document'
   },
   resolve: {
     root: [
@@ -129,11 +138,20 @@ var config = {
   ]
 };
 
+var MarkdownType = new yaml.Type('tag:yaml.org,2002:md', {
+  kind: 'scalar',
+  construct: function (text) {
+    return md.render(text);
+  },
+});
+
+YAML_SCHEMA = yaml.Schema.create([ MarkdownType ]);
+
 var pages = Object.keys(getEntry('views/**/*.html', ['includes', 'base']));
 pages.forEach(function(pathname) {
     var basePath = path.resolve('src/posts/' + pathname + '.html');
     var contents = fs.readFileSync(basePath, 'utf8');
-    var data     = matter(contents);
+    var data     = matter(contents, {schema: YAML_SCHEMA });
     data.data.content = data.content;
     var context  = JSON.stringify(data.data);
     var conf = {

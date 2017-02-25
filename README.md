@@ -52,6 +52,18 @@ content
 {{ title }}   // index
 {{ content }} // content
 ```
+现在数据部分可以用md语法写，字段前面要加上`!!md`：
+```html
+---
+link: !!md [link](www.example.com)
+---
+``` 
+渲染后：
+
+```html
+<p><a href="www.example.com">link</a></p>
+```
+
 
 在html里img标签用到的图片会复制到build目录下：
 
